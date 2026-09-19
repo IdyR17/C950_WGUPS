@@ -26,3 +26,14 @@ class HashTable:
         # if the key doesn't exist,  add a new key value pair to the bucket. 
         # This is where chaining happens if there's a collision.
         bucket.append([key, value])
+
+    #Function to retrieve a value (Package object) from the hash table using its key
+    def get_package(self, key):
+        bucket_index = self.get_hash_index(key)
+        bucket = self.table[bucket_index]
+
+        for item in bucket:
+            if item[0] == key:
+                return item[1]  # Return the package object (value) if found
+
+        return None
