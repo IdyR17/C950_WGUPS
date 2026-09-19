@@ -2,6 +2,7 @@
 import csv
 from package import Package
 from hash_table import HashTable
+from truck import Truck
 
 print("WGUPS Routing Program")
 
@@ -32,3 +33,12 @@ package_table = HashTable()  # Create a package hash table to store the Package 
 load_packages("packages.csv", package_table)
 for i in range(1, 41):  # Print all packages from 1 to 40
     print(package_table.get_package(i))
+
+#Testing the truck class
+trucktest=Truck(1, "08:00 AM")
+for i in range(1, 18):  # Add 17 packages to the truck, last one should fail since the max load is 16 packages
+    trucktest.add_package(i)
+
+print(trucktest.package_ids) #last one shouldn't be added
+print(trucktest.current_location)  #HUB
+print(trucktest.miles) #0 so far
