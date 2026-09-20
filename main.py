@@ -25,6 +25,16 @@ def format_time(minutes_since_midnight):
         hours = 12
 
     return f"{hours}:{minutes:02d}:{seconds:02d} {period}"
+#Normalizing addresses (South=S, East = E, North = N, West = W) so that the package and distance table match
+fix_address = lambda address:(
+    address.replace("South", "S")
+    .replace("East", "E")
+    .replace("North", "N")
+    .replace("West","W")
+    
+
+)
+
 
 #Load package data from the csv file into the hash table
 
@@ -38,7 +48,7 @@ def load_packages(csv_file, hash_table):
                 continue
 
             package_id = int(row[0])
-            address = row[1]
+            address = fix_address(row[1])
             city = row[2]
             state = row[3]
             zip_code = row[4]
@@ -58,7 +68,7 @@ def load_distances(csv_file):
         for row_number, row in enumerate(distance_data): #skip the non-distance rows
             if row_number <8:
                 continue
-            addresses.append(row[1].split("\n")[0].strip()) #clean up address
+            addresses.append(fix_address(row[1].split("\n")[0].strip())) #clean up address
             distances.append(list(filter(None, row[2:])))  # Filter out empties
         return addresses, distances
 
