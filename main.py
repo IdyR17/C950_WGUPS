@@ -3,7 +3,7 @@ import csv
 from package import Package
 from hash_table import HashTable
 from truck import Truck
-from routing import get_next_package
+from routing import get_next_package, make_route
 
 print("WGUPS Routing Program")
 
@@ -50,32 +50,25 @@ def get_distance(a,b,addresses, distances):
 
     return float(distances[max(index_a,index_b)][min(index_a,index_b)])
 
-package_table = HashTable()  # Create a package hash table to store the Package objects
-load_packages("packages.csv", package_table)
-for i in range(1, 41):  # Print all packages from 1 to 40
-    print(package_table.get_package(i))
+packages = HashTable()  # Create a package hash table to store the Package objects
+load_packages("packages.csv", packages)
 
-#Testing the truck class
-trucktest=Truck(1, "08:00 AM")
-for i in range(1, 18):  # Add 17 packages to the truck, last one should fail since the max load is 16 packages
-    trucktest.add_package(i)
+#Testing the routing algorithm with truck and package data
+trucktest1 = Truck(1, "08:00 AM")
 
-print(trucktest.package_ids) #last one shouldn't be added
-print(trucktest.current_location)  #HUB
-print(trucktest.miles) #0 so far
+for package_id in [1, 3, 4, 5]:
+    trucktest1.add_package(package_id)
 
-print("Distance testing")
 addresses, distances = load_distances("distances.csv")
-print(get_distance("HUB", "1060 Dalton Ave S", addresses, distances))
-print(get_distance("1060 Dalton Ave S", "HUB", addresses, distances))
-print(get_distance("HUB", "1330 2100 S", addresses, distances))
-print(get_distance("1060 Dalton Ave S", "1330 2100 S", addresses, distances))
 
-test_package = package_table.get_package(1);
-print(test_package)
-print("distance from HUB: ", get_distance("HUB", test_package.address, addresses, distances))
+make_route(
+    trucktest1,
+    packages,
+    addresses,
+    distances,
+    get_distance
+)
 
-test_packages = [1, 3, 4, 5]
-
-closest_package, closest_distance = get_next_package("HUB", test_packages, package_table, addresses, distances, get_distance)
-print(f"Closest location: {closest_package}. Distance: {closest_distance}")
+print("Route:", trucktest1.route)
+print("Miles:", trucktest1.miles)
+print("Final location:", trucktest1.current_location)
