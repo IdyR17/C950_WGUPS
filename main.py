@@ -71,44 +71,36 @@ def get_distance(a,b,addresses, distances):
 
 packages = HashTable()  # Create a package hash table to store the Package objects
 load_packages("packages.csv", packages)
-
-#Testing the routing algorithm with truck and package data
-trucktest1 = Truck(1, 480)
-
-for package_id in [1, 3, 4, 5]:
-    trucktest1.add_package(package_id)
-
 addresses, distances = load_distances("distances.csv")
 
-make_route(
-    trucktest1,
-    packages,
-    addresses,
-    distances,
-    get_distance
-)
+#Testing the routing algorithm with truck and package data
+truck1 = Truck(1, 480)
 
-print("Route:", trucktest1.route)
-print("Miles:", trucktest1.miles)
-print("Final location:", trucktest1.current_location)
-print("Final time:", format_time(trucktest1.current_time))
+for package_id in [13, 14, 15, 16, 19, 20]:
+    truck1.add_package(package_id)
 
-for package_id in trucktest1.route:
+make_route(truck1,packages,addresses,distances,get_distance)
+
+print("Truck 1 Route:", truck1.route)
+print("Truck 1 Miles:", truck1.miles)
+print("Truck 1 Return Time:", format_time(truck1.current_time))
+
+for package_id in truck1.route:
     package = packages.get_package(package_id)
-    print(
-        "Package:",
-        package_id,
-        "Departure:",
-        format_time(package.departure_time),
-        "Delivered:",
-        format_time(package.delivery_time)
-    )
 
-#testing status
+    print("Package:",package_id,"Delivered:",format_time(package.delivery_time),"Deadline:",package.deadline)
 
-package1 = packages.get_package(1)
-package28 = packages.get_package(28)
+truck2 = Truck(2, 545)  # 9:05 AM
+for package_id in [3, 6, 18, 25, 36, 38]:
+    truck2.add_package(package_id)
 
-print("Package 1 at 8:05:", package1.get_current_status(485))
-print("Package 28 at 9:00:", package28.get_current_status(540))
-print("Package 28 at 9:10:", package28.get_current_status(550))
+make_route(truck2,packages,addresses,distances,get_distance)
+
+print("Truck 2 Route:", truck2.route)
+print("Truck 2 Miles:", truck2.miles)
+print("Truck 2 Return Time:", format_time(truck2.current_time))
+
+for package_id in truck2.route:
+    package = packages.get_package(package_id)
+
+    print("Package:",package_id,"Delivered:",format_time(package.delivery_time),"Deadline:",package.deadline)
