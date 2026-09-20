@@ -3,12 +3,33 @@
 
 def get_next_package(current_location, package_ids, packages, addresses, distances, get_distance):
     closest_package_id = None
-    closest_distance = float('inf')
+    closest_distance = float("inf")
+    priority_packages = []
 
+    # Find packages that still have an early deadline
     for package_id in package_ids:
         package = packages.get_package(package_id)
 
-        distance = get_distance(current_location, package.address, addresses, distances)
+        if package.deadline != "EOD":
+            priority_packages.append(package_id)
+
+    # Prioritize deadline packages if there are any left
+    if priority_packages:
+        packages_to_check = priority_packages
+    else:
+        packages_to_check = package_ids
+
+    # Nearest Neighbor
+    for package_id in packages_to_check:
+        package = packages.get_package(package_id)
+
+        distance = get_distance(
+            current_location,
+            package.address,
+            addresses,
+            distances
+        )
+
         if distance < closest_distance:
             closest_distance = distance
             closest_package_id = package_id
@@ -47,7 +68,7 @@ def make_route(truck, packages, addresses, distances, get_distance):
     #Return truck to Hub
     hub_distance=get_distance(truck.current_location, "HUB", addresses, distances)
     truck.miles += hub_distance
-    
+
     travel_minutes = (hub_distance /18) *60
     truck.current_time += travel_minutes
 
