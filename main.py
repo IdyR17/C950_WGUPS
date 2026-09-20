@@ -35,11 +35,12 @@ def load_distances(csv_file):
     with open(csv_file, "r", encoding="utf-8-sig") as file:
         distance_data = csv.reader(file)
         
-        for row in distance_data:
-            if len(row) >3:  # contains an address
-                addresses.append(row[1])
-                distances.append(list(filter(None, row[2:])))  # Filter out empty string
-    return addresses, distances
+        for row_number, row in enumerate(distance_data):
+            if row_number <8:
+                continue
+            addresses.append(row[1])
+            distances.append(list(filter(None, row[2:])))  # Filter out empties
+        return addresses, distances
 
 package_table = HashTable()  # Create a package hash table to store the Package objects
 load_packages("packages.csv", package_table)
