@@ -4,6 +4,7 @@ from package import Package
 from hash_table import HashTable
 from truck import Truck
 from routing import make_route
+from assign import assign_packages
 
 print("WGUPS Routing Program")
 
@@ -83,34 +84,70 @@ packages = HashTable()  # Create a package hash table to store the Package objec
 load_packages("packages.csv", packages)
 addresses, distances = load_distances("distances.csv")
 
-#Testing the routing algorithm with truck and package data
-truck1 = Truck(1, 480)
+#Testing the assignment algorithm
 
-for package_id in [13, 14, 15, 16, 19, 20]:
-    truck1.add_package(package_id)
+truck1 = Truck(1, 480)   # 8:00 AM
+truck2 = Truck(2, 545)   # 9:05 AM
+truck3 = Truck(3, 620)   # 10:20 AM
 
-make_route(truck1,packages,addresses,distances,get_distance)
+assign_packages(
+    truck1,
+    truck2,
+    truck3,
+    packages,
+    40,
+    addresses,
+    distances,
+    get_distance
+)
 
-print("Truck 1 Route:", truck1.route)
-print("Truck 1 Miles:", truck1.miles)
-print("Truck 1 Return Time:", format_time(truck1.current_time))
+print("Truck 1:", truck1.package_ids)
+print("Truck 1 count:", len(truck1.package_ids))
+
+print("Truck 2:", truck2.package_ids)
+print("Truck 2 count:", len(truck2.package_ids))
+
+print("Truck 3:", truck3.package_ids)
+print("Truck 3 count:", len(truck3.package_ids))
+
+make_route(
+    truck1,
+    packages,
+    addresses,
+    distances,
+    get_distance
+)
+
+make_route(
+    truck2,
+    packages,
+    addresses,
+    distances,
+    get_distance
+)
+
+print("\nTRUCK 1")
+print("Route:", truck1.route)
+print("Miles:", round(truck1.miles, 2))
+print("Return:", format_time(truck1.current_time))
 
 for package_id in truck1.route:
     package = packages.get_package(package_id)
+    print(
+        "Package:", package_id,
+        "Delivered:", format_time(package.delivery_time),
+        "Deadline:", package.deadline
+    )
 
-    print("Package:",package_id,"Delivered:",format_time(package.delivery_time),"Deadline:",package.deadline)
-
-truck2 = Truck(2, 545)  # 9:05 AM
-for package_id in [3, 6, 18, 25, 36, 38]:
-    truck2.add_package(package_id)
-
-make_route(truck2,packages,addresses,distances,get_distance)
-
-print("Truck 2 Route:", truck2.route)
-print("Truck 2 Miles:", truck2.miles)
-print("Truck 2 Return Time:", format_time(truck2.current_time))
+print("\nTRUCK 2")
+print("Route:", truck2.route)
+print("Miles:", round(truck2.miles, 2))
+print("Return:", format_time(truck2.current_time))
 
 for package_id in truck2.route:
     package = packages.get_package(package_id)
-
-    print("Package:",package_id,"Delivered:",format_time(package.delivery_time),"Deadline:",package.deadline)
+    print(
+        "Package:", package_id,
+        "Delivered:", format_time(package.delivery_time),
+        "Deadline:", package.deadline
+    )
