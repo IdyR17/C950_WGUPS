@@ -103,3 +103,12 @@ for package_id in trucktest1.route:
         "Delivered:",
         format_time(package.delivery_time)
     )
+
+#testing status
+
+package1 = packages.get_package(1)
+package28 = packages.get_package(28)
+
+print("Package 1 at 8:05:", package1.get_current_status(485))
+print("Package 28 at 9:00:", package28.get_current_status(540))
+print("Package 28 at 9:10:", package28.get_current_status(550))

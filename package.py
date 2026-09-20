@@ -30,3 +30,13 @@ class Package:
                 f"Departure Time: {self.departure_time}, "
                 f"Status: {self.status}"
         )
+
+    def get_current_status(self, status_time): #Function to get the status of the package
+        if "Delayed on flight" in self.special_notes and status_time < 545: #if the package is delayed on flight and is not yet at Hub
+            return "Delayed"
+        if self.departure_time is None or status_time < self.departure_time:
+            return "At Hub"
+        if self.delivery_time is not None and status_time >= self.delivery_time:
+            return "Delivered"
+        else:
+            return "En Route"
