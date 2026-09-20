@@ -8,6 +8,7 @@ class Package:
         self.city = city
         self.state = state
         self.zip_code = zip_code
+        self.previous_zip = zip_code
         self.deadline = deadline
         self.weight = weight
         self.special_notes = special_notes
@@ -24,6 +25,7 @@ class Package:
                 f"City: {self.city}, "
                 f"State: {self.state}, "
                 f"Zip Code: {self.zip_code}, "
+                f"Zip Code: {self.previous_zip}, "
                 f"Deadline: {self.deadline}, "
                 f"Weight: {self.weight}, "
                 f"Special Notes: {self.special_notes}, "

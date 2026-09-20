@@ -116,6 +116,7 @@ truck3.departure_time=max(620, truck1.current_time)
 truck3.current_time=truck3.departure_time
 package9 = packages.get_package(9)
 package9.address = fix_address("410 S State St")
+package9.zip_code = "84111"
 
 make_route(
     truck3,
@@ -125,6 +126,8 @@ make_route(
     get_distance
 )
 
+#Uncomment this for testing
+""" 
 print("\nTRUCK 1")
 print("Route:", truck1.route)
 print("Miles:", round(truck1.miles, 2))
@@ -164,9 +167,6 @@ for package_id in truck3.route:
         "Deadline:", package.deadline
     )
 
-####################################
-#Calculate total miles
-total_miles = truck1.miles+truck2.miles+truck3.miles
-
+"""
 #User Interface for WGUPS
-main_menu(packages, 40, total_miles)
+main_menu(packages, 40, truck1, truck2, truck3)
