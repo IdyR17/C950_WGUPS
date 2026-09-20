@@ -15,6 +15,11 @@ def get_next_package(current_location, package_ids, packages, addresses, distanc
 
     return closest_package_id, closest_distance
 
+# To make the route, we also have to take the constraints into consideration. The following logic will be implemented on top of Nearest Neighbor:
+# Truck 1: early deadline / group that needs to be delivered together
+# Truck 2: Truck 2 ONLY packages. Package delayed with early delivery
+# Truck 3: Package 9 (waiting for correct address), packages delayed with EOD deliveries, other packages to choose, as needed
+
 def make_route(truck, packages, addresses, distances, get_distance):
     #list that will keep track of packages that havent been delivered yet
     undelivered_packages = truck.package_ids.copy()
@@ -38,3 +43,12 @@ def make_route(truck, packages, addresses, distances, get_distance):
         next_package.departure_time = truck.departure_time
 
         undelivered_packages.remove(next_package_id)  # Remove the package from the undelivered list
+
+    #Return truck to Hub
+    hub_distance=get_distance(truck.current_location, "HUB", addresses, distances)
+    truck.miles += hub_distance
+    
+    travel_minutes = (hub_distance /18) *60
+    truck.current_time += travel_minutes
+
+    truck.current_location= "HUB"

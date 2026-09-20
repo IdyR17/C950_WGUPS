@@ -91,7 +91,7 @@ make_route(
 print("Route:", trucktest1.route)
 print("Miles:", trucktest1.miles)
 print("Final location:", trucktest1.current_location)
-print("Final time:", trucktest1.current_time)
+print("Final time:", format_time(trucktest1.current_time))
 
 for package_id in trucktest1.route:
     package = packages.get_package(package_id)
