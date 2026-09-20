@@ -88,7 +88,7 @@ addresses, distances = load_distances("distances.csv")
 
 truck1 = Truck(1, 480)   # 8:00 AM
 truck2 = Truck(2, 545)   # 9:05 AM
-truck3 = Truck(3, 620)   # 10:20 AM
+truck3 = Truck(3, 545)   # To be changed later
 
 assign_packages(
     truck1,
@@ -126,6 +126,22 @@ make_route(
     get_distance
 )
 
+# Truck 3 will leave when driver returns
+truck3.departure_time=max(620, min(truck1.current_time, truck2.current_time))
+
+#correct Package 9 address:
+truck3.current_time=truck3.departure_time
+package9 = packages.get_package(9)
+package9.address = fix_address("410 S State St")
+
+make_route(
+    truck3,
+    packages,
+    addresses,
+    distances,
+    get_distance
+)
+
 print("\nTRUCK 1")
 print("Route:", truck1.route)
 print("Miles:", round(truck1.miles, 2))
@@ -151,3 +167,17 @@ for package_id in truck2.route:
         "Delivered:", format_time(package.delivery_time),
         "Deadline:", package.deadline
     )
+
+print("\nTRUCK 3")
+print("Route:", truck3.route)
+print("Miles:", round(truck3.miles, 2))
+print("Return:", format_time(truck3.current_time))
+
+for package_id in truck3.route:
+    package = packages.get_package(package_id)
+    print(
+        "Package:", package_id,
+        "Delivered:", format_time(package.delivery_time),
+        "Deadline:", package.deadline
+    )
+

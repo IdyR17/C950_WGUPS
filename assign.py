@@ -43,7 +43,7 @@ def assign_packages(truck1,truck2,truck3,packages,total_packages,addresses,dista
                 get_distance
         )
 
-        closest_truck.add_package(package_id)
+            closest_truck.add_package(package_id)
     # Assign the remaining EOD packages to the closest truck
     for package_id in range(1, total_packages + 1):
 
