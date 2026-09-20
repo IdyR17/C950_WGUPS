@@ -35,12 +35,19 @@ def load_distances(csv_file):
     with open(csv_file, "r", encoding="utf-8-sig") as file:
         distance_data = csv.reader(file)
         
-        for row_number, row in enumerate(distance_data):
+        for row_number, row in enumerate(distance_data): #skip the non-distance rows
             if row_number <8:
                 continue
-            addresses.append(row[1])
+            addresses.append(row[1].split("\n")[0].strip()) #clean up address
             distances.append(list(filter(None, row[2:])))  # Filter out empties
         return addresses, distances
+
+def get_distance(a,b,addresses, distances):
+    #calculate between two addresses
+    index_a=addresses.index(a)
+    index_b=addresses.index(b)
+
+    return float(distances[max(index_a,index_b)][min(index_a,index_b)])
 
 package_table = HashTable()  # Create a package hash table to store the Package objects
 load_packages("packages.csv", package_table)
@@ -58,5 +65,7 @@ print(trucktest.miles) #0 so far
 
 print("Distance testing")
 addresses, distances = load_distances("distances.csv")
-print("Addresses:", addresses)
-print("Distances:", distances)
+print(get_distance("HUB", "1060 Dalton Ave S", addresses, distances))
+print(get_distance("1060 Dalton Ave S", "HUB", addresses, distances))
+print(get_distance("HUB", "1330 2100 S", addresses, distances))
+print(get_distance("1060 Dalton Ave S", "1330 2100 S", addresses, distances))
