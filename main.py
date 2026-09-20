@@ -3,6 +3,7 @@ import csv
 from package import Package
 from hash_table import HashTable
 from truck import Truck
+from routing import get_next_package
 
 print("WGUPS Routing Program")
 
@@ -69,3 +70,12 @@ print(get_distance("HUB", "1060 Dalton Ave S", addresses, distances))
 print(get_distance("1060 Dalton Ave S", "HUB", addresses, distances))
 print(get_distance("HUB", "1330 2100 S", addresses, distances))
 print(get_distance("1060 Dalton Ave S", "1330 2100 S", addresses, distances))
+
+test_package = package_table.get_package(1);
+print(test_package)
+print("distance from HUB: ", get_distance("HUB", test_package.address, addresses, distances))
+
+test_packages = [1, 3, 4, 5]
+
+closest_package, closest_distance = get_next_package("HUB", test_packages, package_table, addresses, distances, get_distance)
+print(f"Closest location: {closest_package}. Distance: {closest_distance}")
