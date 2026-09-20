@@ -29,6 +29,18 @@ def load_packages(csv_file, hash_table):
             package = Package(package_id, address, city, state, zip_code, deadline, weight, special_notes)
             hash_table.insert(package_id, package)
 
+def load_distances(csv_file):
+    addresses = []
+    distances = []
+    with open(csv_file, "r", encoding="utf-8-sig") as file:
+        distance_data = csv.reader(file)
+        
+        for row in distance_data:
+            if len(row) >3:  # contains an address
+                addresses.append(row[1])
+                distances.append(list(filter(None, row[2:])))  # Filter out empty string
+    return addresses, distances
+
 package_table = HashTable()  # Create a package hash table to store the Package objects
 load_packages("packages.csv", package_table)
 for i in range(1, 41):  # Print all packages from 1 to 40
@@ -42,3 +54,8 @@ for i in range(1, 18):  # Add 17 packages to the truck, last one should fail sin
 print(trucktest.package_ids) #last one shouldn't be added
 print(trucktest.current_location)  #HUB
 print(trucktest.miles) #0 so far
+
+print("Distance testing")
+addresses, distances = load_distances("distances.csv")
+print("Addresses:", addresses)
+print("Distances:", distances)
