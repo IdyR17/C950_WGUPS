@@ -38,8 +38,14 @@ def convert_time_input(time_s):
 def show_package(package, req_time):
     status=package.get_current_status(req_time)
 
+    #for Address change
+    if package.package_id == 9 and req_time < 620:
+        display_address = package.previous_address
+    else:
+        display_address = package.address
+
     print("\nPackage ID:", package.package_id)
-    print("Address:", package.address)
+    print("Address:", display_address)
     print("City:", package.city)
     print("State:", package.state)
     print("ZIP:", package.zip_code)
