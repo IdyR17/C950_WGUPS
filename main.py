@@ -86,9 +86,9 @@ addresses, distances = load_distances("distances.csv")
 
 #Testing the assignment algorithm
 
-truck1 = Truck(1, 480)   # 8:00 AM
+truck1 = Truck(1, 480)   # 8:00 AM Returns to Hub for truck change
 truck2 = Truck(2, 545)   # 9:05 AM
-truck3 = Truck(3, 545)   # To be changed later
+truck3 = Truck(3, 620)   # 10:20 AM. To be changed after Truck 1 returns
 
 assign_packages(
     truck1,
@@ -115,7 +115,8 @@ make_route(
     packages,
     addresses,
     distances,
-    get_distance
+    get_distance,
+    to_hub=True
 )
 
 make_route(
@@ -127,7 +128,7 @@ make_route(
 )
 
 # Truck 3 will leave when driver returns
-truck3.departure_time=max(620, min(truck1.current_time, truck2.current_time))
+truck3.departure_time=max(620, truck1.current_time)
 
 #correct Package 9 address:
 truck3.current_time=truck3.departure_time

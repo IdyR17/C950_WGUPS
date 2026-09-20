@@ -11,10 +11,9 @@ class Package:
         self.weight = weight
         self.special_notes = special_notes
 
-        #set up default values for delivery and departure time and status, every package starts at the hub before the Truck leaves.
+        #set up default values for delivery and departure time
         self.delivery_time = None
         self.departure_time = None        
-        self.status = "At Hub"
 
     def __str__(self):#Override / string method to print out the package information in string format
         return( 
@@ -28,7 +27,6 @@ class Package:
                 f"Special Notes: {self.special_notes}, "
                 f"Delivery Time: {self.delivery_time}, "
                 f"Departure Time: {self.departure_time}, "
-                f"Status: {self.status}"
         )
 
     def get_current_status(self, status_time): #Function to get the status of the package
