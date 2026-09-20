@@ -3,9 +3,28 @@ import csv
 from package import Package
 from hash_table import HashTable
 from truck import Truck
-from routing import get_next_package, make_route
+from routing import make_route
 
 print("WGUPS Routing Program")
+
+# Time formatting to convert minutes since midnight to time format (HH:MM:SS AM/PM)
+def format_time(minutes_since_midnight):
+    total_seconds = round(minutes_since_midnight * 60)
+
+    hours = total_seconds // 3600
+    minutes = (total_seconds % 3600) // 60
+    seconds = total_seconds % 60
+
+    period = "AM"
+
+    if hours >= 12:
+        period = "PM"
+    if hours > 12:
+        hours -= 12
+    if hours == 0:
+        hours = 12
+
+    return f"{hours}:{minutes:02d}:{seconds:02d} {period}"
 
 #Load package data from the csv file into the hash table
 
@@ -54,7 +73,7 @@ packages = HashTable()  # Create a package hash table to store the Package objec
 load_packages("packages.csv", packages)
 
 #Testing the routing algorithm with truck and package data
-trucktest1 = Truck(1, "08:00 AM")
+trucktest1 = Truck(1, 480)
 
 for package_id in [1, 3, 4, 5]:
     trucktest1.add_package(package_id)
@@ -72,3 +91,15 @@ make_route(
 print("Route:", trucktest1.route)
 print("Miles:", trucktest1.miles)
 print("Final location:", trucktest1.current_location)
+print("Final time:", trucktest1.current_time)
+
+for package_id in trucktest1.route:
+    package = packages.get_package(package_id)
+    print(
+        "Package:",
+        package_id,
+        "Departure:",
+        format_time(package.departure_time),
+        "Delivered:",
+        format_time(package.delivery_time)
+    )

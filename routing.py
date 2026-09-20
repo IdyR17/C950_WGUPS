@@ -26,6 +26,15 @@ def make_route(truck, packages, addresses, distances, get_distance):
 
         truck.route.append(next_package_id)  # Add the package to the truck's route
         truck.miles += distance  # Update mileage
+
+        #calculate the travel time in minutes, truck speed is 18 miles per hour.
+        travel_minutes = (distance / 18) * 60
+        truck.current_time +=travel_minutes  # Update current time
+
         truck.current_location = next_package.address  # Update current location
+
+        #Update the package's delivery time
+        next_package.delivery_time = truck.current_time
+        next_package.departure_time = truck.departure_time
 
         undelivered_packages.remove(next_package_id)  # Remove the package from the undelivered list
