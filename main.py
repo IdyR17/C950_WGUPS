@@ -1,5 +1,6 @@
 #Student ID: 010585953
 import csv
+from ui import main_menu, format_time
 from package import Package
 from hash_table import HashTable
 from truck import Truck
@@ -8,32 +9,13 @@ from assign import assign_packages
 
 print("WGUPS Routing Program")
 
-# Time formatting to convert minutes since midnight to time format (HH:MM:SS AM/PM)
-def format_time(minutes_since_midnight):
-    total_seconds = round(minutes_since_midnight * 60)
 
-    hours = total_seconds // 3600
-    minutes = (total_seconds % 3600) // 60
-    seconds = total_seconds % 60
-
-    period = "AM"
-
-    if hours >= 12:
-        period = "PM"
-    if hours > 12:
-        hours -= 12
-    if hours == 0:
-        hours = 12
-
-    return f"{hours}:{minutes:02d}:{seconds:02d} {period}"
 #Normalizing addresses (South=S, East = E, North = N, West = W) so that the package and distance table match
 fix_address = lambda address:(
     address.replace("South", "S")
     .replace("East", "E")
     .replace("North", "N")
-    .replace("West","W")
-    
-
+    .replace("West","W") 
 )
 
 
@@ -59,7 +41,7 @@ def load_packages(csv_file, hash_table):
 
             package = Package(package_id, address, city, state, zip_code, deadline, weight, special_notes)
             hash_table.insert(package_id, package)
-
+#Function to load distance data from csv
 def load_distances(csv_file):
     addresses = []
     distances = []
@@ -84,7 +66,7 @@ packages = HashTable()  # Create a package hash table to store the Package objec
 load_packages("packages.csv", packages)
 addresses, distances = load_distances("distances.csv")
 
-#Testing the assignment algorithm
+#Assigning logic
 
 truck1 = Truck(1, 480)   # 8:00 AM Returns to Hub for truck change
 truck2 = Truck(2, 545)   # 9:05 AM
@@ -182,3 +164,9 @@ for package_id in truck3.route:
         "Deadline:", package.deadline
     )
 
+####################################
+#Calculate total miles
+total_miles = truck1.miles+truck2.miles+truck3.miles
+
+#User Interface for WGUPS
+main_menu(packages, 40, total_miles)
