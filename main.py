@@ -1,4 +1,6 @@
-#Student ID: 010585953
+# Student ID: 010585953
+# Main program flow: loads package and distance data, creates trucks, assign pacakges,
+# calculates delivery rotes, updates address on Package 9, then starts the UI
 import csv
 from ui import main_menu, format_time
 from package import Package
@@ -10,23 +12,24 @@ from assign import assign_packages
 print("WGUPS Routing Program")
 
 
-#Normalizing addresses (South=S, East = E, North = N, West = W) so that the package and distance table match
-fix_address = lambda address:(
+# Normalizes addresses (South=S, East = E, North = N, West = W) so that the package and distance table match
+fix_address = lambda address: (
     address.replace("South", "S")
     .replace("East", "E")
     .replace("North", "N")
-    .replace("West","W") 
+    .replace("West", "W")
 )
 
 
-#Load package data from the csv file into the hash table
+# Load package data from the csv file, creates Package objects, and inserts them into the hash table
+
 
 def load_packages(csv_file, hash_table):
     with open(csv_file, "r", encoding="utf-8-sig") as file:
         package_data = csv.reader(file)
 
         for row in package_data:
-            #skip non-package rows (if there's no package ID in the first column)
+            # skip non-package rows (if there's no package ID in the first column)
             if not row[0].isdigit():
                 continue
 
@@ -39,94 +42,84 @@ def load_packages(csv_file, hash_table):
             weight = row[6]
             special_notes = row[7]
 
-            package = Package(package_id, address, city, state, zip_code, deadline, weight, special_notes)
+            package = Package(
+                package_id,
+                address,
+                city,
+                state,
+                zip_code,
+                deadline,
+                weight,
+                special_notes,
+            )
             hash_table.insert(package_id, package)
-#Function to load distance data from csv
+
+
+# Function to load distance data from the provided csv distance table
 def load_distances(csv_file):
     addresses = []
     distances = []
     with open(csv_file, "r", encoding="utf-8-sig") as file:
         distance_data = csv.reader(file)
-        
-        for row_number, row in enumerate(distance_data): #skip the non-distance rows
-            if row_number <8:
+
+        for row_number, row in enumerate(distance_data):  # skip the non-distance rows
+            if row_number < 8:
                 continue
-            addresses.append(fix_address(row[1].split("\n")[0].strip())) #clean up address
+            addresses.append(
+                fix_address(row[1].split("\n")[0].strip())
+            )  # clean up address
             distances.append(list(filter(None, row[2:])))  # Filter out empties
         return addresses, distances
 
-def get_distance(a,b,addresses, distances):
-    #calculate between two addresses
-    index_a=addresses.index(a)
-    index_b=addresses.index(b)
 
-    return float(distances[max(index_a,index_b)][min(index_a,index_b)])
+def get_distance(a, b, addresses, distances):
+    # calculate between two addresses, the distance table is triangular
+    index_a = addresses.index(a)
+    index_b = addresses.index(b)
+    # max / min selects the row and column containing the stored distance
+    return float(distances[max(index_a, index_b)][min(index_a, index_b)])
+
 
 packages = HashTable()  # Create a package hash table to store the Package objects
 load_packages("packages.csv", packages)
 addresses, distances = load_distances("distances.csv")
 
-#Assigning logic
+# Create the three trucks with their earliest departure times planned. Times are used in minutes-to-midnight
 
-truck1 = Truck(1, 480)   # 8:00 AM Returns to Hub for truck change
-truck2 = Truck(2, 545)   # 9:05 AM
-truck3 = Truck(3, 620)   # 10:20 AM. To be changed after Truck 1 returns
+truck1 = Truck(1, 480)  # 8:00 AM - Returns to Hub for truck change
+truck2 = Truck(2, 545)  # 9:05 AM - Waits for "delayed at airport" packages
+truck3 = Truck(
+    3, 620
+)  # 10:20 AM - Earliest possible departure. To be changed after Truck 1 returns
 
+# Assign all 40 pacakges to trucks considering the special instructions, deadlines, truck load, and distance.
 assign_packages(
-    truck1,
-    truck2,
-    truck3,
-    packages,
-    40,
-    addresses,
-    distances,
-    get_distance
+    truck1, truck2, truck3, packages, 40, addresses, distances, get_distance
 )
-
-print("Truck 1:", truck1.package_ids)
-print("Truck 1 count:", len(truck1.package_ids))
-
-print("Truck 2:", truck2.package_ids)
-print("Truck 2 count:", len(truck2.package_ids))
-
-print("Truck 3:", truck3.package_ids)
-print("Truck 3 count:", len(truck3.package_ids))
-
+# Routing trucks
 make_route(
     truck1,
     packages,
     addresses,
     distances,
     get_distance,
-    to_hub=True
+    to_hub=True,  # Driver returns to hub to change trucks.
 )
 
-make_route(
-    truck2,
-    packages,
-    addresses,
-    distances,
-    get_distance
-)
+make_route(truck2, packages, addresses, distances, get_distance)
 
 # Truck 3 will leave when driver returns
-truck3.departure_time=max(620, truck1.current_time)
+truck3.departure_time = max(620, truck1.current_time)
 
-#correct Package 9 address:
-truck3.current_time=truck3.departure_time
+# correct Package 9 address:
+truck3.current_time = truck3.departure_time
 package9 = packages.get_package(9)
 package9.address = fix_address("410 S State St")
 package9.zip_code = "84111"
 
-make_route(
-    truck3,
-    packages,
-    addresses,
-    distances,
-    get_distance
-)
+make_route(truck3, packages, addresses, distances, get_distance)
 
-#Uncomment this for testing
+# Uncomment this block for testing routing and delivery time
 """ 
 print("\nTRUCK 1")
 print("Route:", truck1.route)
@@ -168,5 +161,5 @@ for package_id in truck3.route:
     )
 
 """
-#User Interface for WGUPS
+# Starts user Interface for WGUPS
 main_menu(packages, 40, truck1, truck2, truck3)
